@@ -3,6 +3,9 @@
 Querying on-chain Avalanche data, three ways. Compiled, statically
 typed, no runtime dependency install needed once you've built it.
 
+> Looking for every command in one place, across all four languages?
+> See [`COMMANDS.md`](../COMMANDS.md) at the repo root.
+
 ## Setup
 
 ```bash
@@ -74,4 +77,10 @@ documented as such in the code.
 4. Post on X with both screenshots, tag **@code_mwangi** and **@AvaxAfrica**.
 5. Copy your post link, submit it on the quest page once it's live.
 
-Discord `#week-2-cohort3` for anything you get stuck on.
+Cohort WhatsApp group for anything you get stuck on.
+
+## Contributing
+
+Fixing a bug or improving this starter itself, rather than building
+your Week 2 submission? See [`CONTRIBUTING.md`](../CONTRIBUTING.md) at
+the repo root.
