@@ -70,6 +70,11 @@ the tooling is different in each. The short version:
 - **Go**: copy `.env.example` to `.env`, `go run ./direct-rpc` / `./chainkit-fetch` / `./chainkit-mcp-agent`
 - **Rust**: copy `.env.example` to `.env`, `cargo run --bin direct_rpc` / `chainkit_fetch` / `chainkit_mcp_agent`
 
+For every command above, spelled out in full with prerequisites,
+environment variables, and troubleshooting, see
+**[COMMANDS.md](./COMMANDS.md)**, a single command reference that
+covers all four languages side by side.
+
 ## Submission
 
 Same flow as Week 1, regardless of which language you build in: test it
@@ -85,3 +90,10 @@ the same shape no matter which provider you picked. Only the Anthropic
 path supports tool calling today, that's explained inline in every
 language's model-provider file, not hidden. If your Week 2 agent needs
 tools, and it does, build on Anthropic until the others catch up.
+
+## Contributing
+
+Found a bug, want to fix a doc, or improve one of the language
+implementations? See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for
+ground rules, how to keep the four languages in parity, and how to
+open a PR.
