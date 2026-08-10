@@ -3,6 +3,9 @@
 Querying on-chain Avalanche data, three ways. Same pattern as the
 JavaScript starter, Python idioms throughout.
 
+> Looking for every command in one place, across all four languages?
+> See [`COMMANDS.md`](../COMMANDS.md) at the repo root.
+
 ## Setup
 
 ```bash
@@ -66,4 +69,10 @@ other three are plain text chat, clearly marked as such in
 4. Post on X with both screenshots, tag **@code_mwangi** and **@AvaxAfrica**.
 5. Copy your post link, submit it on the quest page once it's live.
 
-Discord `#week-2-cohort3` for anything you get stuck on.
+Cohort WhatsApp group for anything you get stuck on.
+
+## Contributing
+
+Fixing a bug or improving this starter itself, rather than building
+your Week 2 submission? See [`CONTRIBUTING.md`](../CONTRIBUTING.md) at
+the repo root.
