@@ -63,16 +63,23 @@ other three are plain text chat, clearly marked as such in
 
 ## Submission
 
-1. Test everything yourself, confirm it actually works.
-2. Screenshot the working test.
-3. Open your PR, screenshot that too.
-4. Post on X with both screenshots, tag **@code_mwangi** and **@AvaxAfrica**.
-5. Copy your post link, submit it on the quest page once it's live.
+1. Fork this repo and create a `week-2-{your-github-handle}` branch.
+2. Test everything yourself, confirm it actually works.
+3. Screenshot the working test.
+4. Open your PR (branch → your fork's `main`), screenshot that too.
+5. Post on X with both screenshots, tag **@code_mwangi** and **@AvaxAfrica**.
+6. Copy your post link, submit it on the quest page once it's live, and
+   share both links in the WhatsApp community.
+
+Full steps, PR title format, and the PR template are in
+[`CONTRIBUTING.md`](../CONTRIBUTING.md#submission-steps) at the repo
+root.
 
 Cohort WhatsApp group for anything you get stuck on.
 
 ## Contributing
 
 Fixing a bug or improving this starter itself, rather than building
-your Week 2 submission? See [`CONTRIBUTING.md`](../CONTRIBUTING.md) at
-the repo root.
+your Week 2 submission? See
+[`CONTRIBUTING.md`](../CONTRIBUTING.md#improving-the-starter-itself)
+at the repo root.
