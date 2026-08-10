@@ -1,0 +1,18 @@
+{
+  "name": "mini-hack-cohort3-session3-starter-js",
+  "version": "1.0.0",
+  "description": "Cohort 3 Session 3 starter (JavaScript): querying on-chain Avalanche data three ways, plus the multi-provider model layer from Sessions 1-2",
+  "type": "module",
+  "scripts": {
+    "direct-rpc": "node direct-rpc.js",
+    "fetch-transactions": "node chainkit-fetch.js",
+    "mcp-agent": "node chainkit-mcp-agent.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@avalanche-sdk/chainkit": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.0"
+  }
+}
