@@ -77,10 +77,12 @@ covers all four languages side by side.
 
 ## Submission
 
-Same flow as Week 1, regardless of which language you build in: test it
+Same flow as Week 1, regardless of which language you build in: fork
+this repo, build on a `week-2-{your-github-handle}` branch, test it
 yourself, screenshot the working test and your PR, post on X tagging
 **@code_mwangi** and **@AvaxAfrica**, then submit that link on the quest
-page. Full steps are in each language folder's README.
+page. Full steps, branch naming, PR title format, and the PR template
+are in **[CONTRIBUTING.md](./CONTRIBUTING.md#submission-steps)**.
 
 ## Model provider, the short version
 
@@ -93,7 +95,8 @@ tools, and it does, build on Anthropic until the others catch up.
 
 ## Contributing
 
-Found a bug, want to fix a doc, or improve one of the language
-implementations? See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for
-ground rules, how to keep the four languages in parity, and how to
-open a PR.
+Found a bug in the starter itself, want to fix a doc, or improve one of
+the language implementations, rather than build your Week 2
+submission? See
+**[CONTRIBUTING.md](./CONTRIBUTING.md#improving-the-starter-itself)**
+for ground rules and how to keep the four languages in parity.
