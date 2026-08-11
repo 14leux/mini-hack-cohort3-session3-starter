@@ -3,11 +3,11 @@
 // Before running this, start the ChainKit MCP server in another
 // terminal:
 //
-//	npx -y @avalanche-sdk/chainkit mcp-server
+//	npx -y @avalanche-sdk/chainkit mcp start --transport sse
 //
-// It will print the local URL it is running on, e.g.
-// http://localhost:PORT/mcp. Put that URL in CHAINKIT_MCP_URL in your
-// .env.
+// It will print the host/port it is listening on, e.g.
+// http://localhost:2718/sse. Put that SSE endpoint in CHAINKIT_MCP_URL
+// in your .env.
 //
 // This agent then asks a plain-English question, the model decides to
 // call a ChainKit tool, and the tool call is forwarded straight to the
@@ -57,7 +57,7 @@ func main() {
 	}
 	mcpURL := os.Getenv("CHAINKIT_MCP_URL")
 	if mcpURL == "" {
-		log.Fatal("Set CHAINKIT_MCP_URL in your .env first, from the running mcp-server output.")
+		log.Fatal("Set CHAINKIT_MCP_URL in your .env first, from the running mcp server output (e.g. http://localhost:2718/sse).")
 	}
 	model := os.Getenv("ANTHROPIC_MODEL")
 	if model == "" {

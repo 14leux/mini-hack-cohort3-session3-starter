@@ -11,21 +11,37 @@ async function main() {
   const walletAddress = process.env.WALLET_ADDRESS;
   const apiKey = process.env.GLACIER_API_KEY;
   if (!walletAddress) throw new Error("Set WALLET_ADDRESS in your .env first.");
-  if (!apiKey) throw new Error("Set GLACIER_API_KEY in your .env first. Get a free one at avacloud.io.");
+  if (!apiKey)
+    throw new Error(
+      "Set GLACIER_API_KEY in your .env first. Get a free one at avacloud.io.",
+    );
 
-  const avalancheSDK = new Avalanche({ apiKey });
-
-  const transactions = await avalancheSDK.data.evm.address.transactions.list({
-     chainId: "43113",
-    address: walletAddress,
-    sortOrder: "asc",
+  const avalancheSDK = new Avalanche({
+    chainId: "43113",
+    apiKey,
   });
 
-  console.log(`Found ${transactions.result.transactions.length} transactions\n`);
+  try {
+    const result = await avalancheSDK.data.evm.address.transactions.list({
+      address: walletAddress,
+      sortOrder: "asc",
+    });
 
-  const normalized = normalizeMany(transactions.result.transactions);
-  for (const tx of normalized) {
-    console.log(`${tx.status === "success" ? "OK" : "FAILED"}  ${tx.amount} ${tx.token}  ${tx.timestamp}  ${tx.hash}`);
+    console.log(result);
+
+    const transactions = result?.result?.transactions ?? result?.items ?? [];
+
+    console.log(`Found ${transactions.length} transactions\n`);
+
+    const normalized = normalizeMany(transactions);
+    for (const tx of normalized) {
+      console.log(
+        `${tx.status === "success" ? "OK" : "FAILED"}  ${tx.amount} ${tx.token}  ${tx.timestamp}  ${tx.hash}`,
+      );
+    }
+  } catch (error) {
+    console.error("ChainKit fetch error:", error);
+    process.exit(1);
   }
 }
 
