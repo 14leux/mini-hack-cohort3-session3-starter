@@ -38,7 +38,13 @@ async function main() {
 
   const client = await createModelClient("openai");
   const mcpClient = await connectChainkitMcp();
-  const { tools } = await mcpClient.listTools();
+  // const { tools } = await mcpClient.listTools();
+  const { tools: mcpTools } = await mcpClient.listTools();
+const tools = mcpTools.map((t) => ({
+  name: t.name,
+  description: t.description,
+  input_schema: t.inputSchema,
+}));
 
   console.log(
     `Mini Hack on-chain agent using ${client.provider}, connected to ChainKit MCP. Type 'exit' to quit.\n`,

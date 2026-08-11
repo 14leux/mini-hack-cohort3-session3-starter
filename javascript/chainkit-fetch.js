@@ -33,8 +33,11 @@ async function main() {
 
     console.log(`Found ${transactions.length} transactions\n`);
 
-    for (const tx of transactions) {
-      console.log("->", tx);
+    const normalized = normalizeMany(transactions);
+    for (const tx of normalized) {
+      console.log(
+        `${tx.status === "success" ? "OK" : "FAILED"}  ${tx.amount} ${tx.token}  ${tx.timestamp}  ${tx.hash}`,
+      );
     }
   } catch (error) {
     console.error("ChainKit fetch error:", error);
@@ -42,4 +45,7 @@ async function main() {
   }
 }
 
-main();
+main().catch((err) => {
+  console.error("ChainKit fetch error:", err.message);
+  process.exit(1);
+});
