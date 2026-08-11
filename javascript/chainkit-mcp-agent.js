@@ -36,7 +36,7 @@ async function main() {
   const rl = readline.createInterface({ input, output });
   const messages = [];
 
-  const client = await createModelClient("openai");
+  const client = await createModelClient();
   const mcpClient = await connectChainkitMcp();
   // const { tools } = await mcpClient.listTools();
   const { tools: mcpTools } = await mcpClient.listTools();

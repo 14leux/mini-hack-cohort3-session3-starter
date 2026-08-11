@@ -19,15 +19,13 @@
 //   stopReason — the provider's own reason string, kept as-is, not normalized
 //   raw        — the full untouched response, in case you need provider-specific detail
 //
-// TOOL-CALLING SUPPORT — READ THIS BEFORE SESSION 2
-// Only the Anthropic client below implements tools. OpenAI, Gemini, and
-// Ollama clients accept a `tools` argument without erroring, but ignore it
-// and always return toolCalls: []. Each provider's function-calling API
-// shape is different enough (Anthropic's content blocks vs. OpenAI's
-// tool_calls array vs. Gemini's functionCall parts) that fully normalizing
-// all four is real work, not a quick add. If your Week 1 agent needs
-// tools — and it does, that's the deliverable — build it on "anthropic"
-// until the others catch up.
+// TOOL-CALLING SUPPORT
+// The Anthropic and OpenAI clients below both implement tools and normalize to
+// the same { id, name, input } shape. Gemini and Ollama still accept a `tools`
+// argument without erroring, but ignore it and always return toolCalls: [].
+// Each provider's function-calling API shape differs (Anthropic's content
+// blocks vs. OpenAI's tool_calls array vs. Gemini's functionCall parts), so if
+// you need tools on Gemini or Ollama, wire them up the way OpenAI is here.
 
 import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
@@ -127,6 +125,79 @@ async function createAnthropicClient() {
   };
 }
 
+// The rest of this file — and chainkit-mcp-agent.js — speaks Anthropic's
+// content-block convention: assistant turns carry a `content` array of
+// { type: "text" } / { type: "tool_use" } blocks, and tool results come back
+// as { type: "tool_result", tool_use_id, content } blocks in a user turn.
+// OpenAI's chat API uses a different shape, so these two helpers translate the
+// shared history into OpenAI's format on the way in, and the OpenAI response
+// back into content blocks on the way out. That keeps the agent code
+// provider-agnostic.
+
+// Anthropic-style tool defs { name, description, input_schema } -> OpenAI tools.
+function toOpenAITools(tools) {
+  if (!tools?.length) return undefined;
+  return tools.map((t) => ({
+    type: "function",
+    function: {
+      name: t.name,
+      description: t.description,
+      parameters: t.input_schema ?? { type: "object", properties: {} },
+    },
+  }));
+}
+
+// Shared history (Anthropic convention) -> OpenAI messages array.
+function toOpenAIMessages(systemPrompt, messages) {
+  const out = [{ role: "system", content: systemPrompt }];
+
+  for (const message of messages) {
+    // Plain string content — a user prompt, or an assistant text-only reply.
+    if (typeof message.content === "string") {
+      out.push({ role: message.role, content: message.content });
+      continue;
+    }
+
+    const blocks = Array.isArray(message.content) ? message.content : [];
+
+    if (message.role === "assistant") {
+      const text = blocks
+        .filter((b) => b.type === "text")
+        .map((b) => b.text)
+        .join("");
+      const toolUses = blocks.filter((b) => b.type === "tool_use");
+      out.push({
+        role: "assistant",
+        content: text || null,
+        ...(toolUses.length && {
+          tool_calls: toolUses.map((b) => ({
+            id: b.id,
+            type: "function",
+            function: { name: b.name, arguments: JSON.stringify(b.input ?? {}) },
+          })),
+        }),
+      });
+      continue;
+    }
+
+    // A user turn carrying tool_result blocks -> one OpenAI "tool" message each.
+    for (const block of blocks) {
+      if (block.type === "tool_result") {
+        out.push({
+          role: "tool",
+          tool_call_id: block.tool_use_id,
+          content:
+            typeof block.content === "string"
+              ? block.content
+              : JSON.stringify(block.content),
+        });
+      }
+    }
+  }
+
+  return out;
+}
+
 async function createOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -137,20 +208,47 @@ async function createOpenAIClient() {
 
   return {
     provider: "openai",
-    async generateText({ systemPrompt, messages }) {
-      // Tool calling not yet implemented for this provider — see the note
-      // at the top of this file. Plain text chat only, for now.
+    async generateText({ systemPrompt, messages, tools }) {
       const response = await client.chat.completions.create({
         model: process.env.OPENAI_MODEL || "gpt-4.1",
         max_tokens: Number(process.env.MAX_TOKENS || 1024),
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
+        messages: toOpenAIMessages(systemPrompt, messages),
+        tools: toOpenAITools(tools),
       });
 
+      const message = response.choices?.[0]?.message ?? {};
+      const rawToolCalls = message.tool_calls ?? [];
+
+      const toolCalls = rawToolCalls
+        .filter((c) => c.type === "function")
+        .map((c) => ({
+          id: c.id,
+          name: c.function.name,
+          input: c.function.arguments ? JSON.parse(c.function.arguments) : {},
+        }));
+
+      // Rebuild the assistant turn as Anthropic-style content blocks so the
+      // agent can push response.raw.content straight back into history.
+      const content = [];
+      if (message.content) content.push({ type: "text", text: message.content });
+      for (const call of toolCalls) {
+        content.push({
+          type: "tool_use",
+          id: call.id,
+          name: call.name,
+          input: call.input,
+        });
+      }
+
       return {
-        text: normalizeResponse(response),
-        toolCalls: [],
-        stopReason: response.choices?.[0]?.finish_reason ?? "unknown",
-        raw: response,
+        text: message.content ?? "",
+        toolCalls,
+        // Normalize to "tool_use" so the agent's tool loop fires just like it
+        // does on Anthropic; otherwise pass OpenAI's own finish_reason through.
+        stopReason: toolCalls.length
+          ? "tool_use"
+          : (response.choices?.[0]?.finish_reason ?? "unknown"),
+        raw: { content, response },
       };
     },
   };

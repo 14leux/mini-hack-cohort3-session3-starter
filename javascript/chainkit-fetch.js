@@ -33,11 +33,8 @@ async function main() {
 
     console.log(`Found ${transactions.length} transactions\n`);
 
-    const normalized = normalizeMany(transactions);
-    for (const tx of normalized) {
-      console.log(
-        `${tx.status === "success" ? "OK" : "FAILED"}  ${tx.amount} ${tx.token}  ${tx.timestamp}  ${tx.hash}`,
-      );
+    for (const tx of transactions) {
+      console.log(tx);
     }
   } catch (error) {
     console.error("ChainKit fetch error:", error);
