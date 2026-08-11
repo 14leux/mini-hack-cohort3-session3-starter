@@ -29,6 +29,10 @@
 // tools — and it does, that's the deliverable — build it on "anthropic"
 // until the others catch up.
 
+import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 const SUPPORTED_PROVIDERS = ["anthropic", "openai", "gemini", "ollama"];
 
 function getConfiguredProvider() {
@@ -93,7 +97,6 @@ async function createAnthropicClient() {
     throw new Error("ANTHROPIC_API_KEY is not set.");
   }
 
-  const { default: Anthropic } = await import("@anthropic-ai/sdk");
   const client = new Anthropic({ apiKey });
 
   return {
@@ -130,7 +133,6 @@ async function createOpenAIClient() {
     throw new Error("OPENAI_API_KEY is not set.");
   }
 
-  const { default: OpenAI } = await import("openai");
   const client = new OpenAI({ apiKey });
 
   return {
@@ -160,8 +162,7 @@ async function createGeminiClient() {
     throw new Error("GEMINI_API_KEY is not set.");
   }
 
-  const { GoogleGenAI } = await import("@google/genai");
-  const client = new GoogleGenAI({ apiKey });
+  const client = new GoogleGenerativeAI({ apiKey });
 
   return {
     provider: "gemini",

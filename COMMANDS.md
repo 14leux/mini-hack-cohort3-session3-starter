@@ -62,21 +62,21 @@ Every language's `.env.example` follows the same shape. Copy it to
 `.env` in that language's folder and fill in at minimum
 `ANTHROPIC_API_KEY`, `GLACIER_API_KEY`, and `WALLET_ADDRESS`.
 
-| Variable | Required | Notes |
-|---|---|---|
-| `MODEL_PROVIDER` | No | `anthropic`, `openai`, `gemini`, or `ollama`. Defaults to `anthropic`. |
-| `ANTHROPIC_API_KEY` | Yes (default provider) | Only provider with tool-calling support. |
-| `ANTHROPIC_MODEL` | No | Defaults to `claude-sonnet-4-6`. |
-| `OPENAI_API_KEY` | Only if `MODEL_PROVIDER=openai` | Plain text chat only, no tools. |
-| `OPENAI_MODEL` | No | Defaults to `gpt-4.1`. |
-| `GEMINI_API_KEY` | Only if `MODEL_PROVIDER=gemini` | Plain text chat only, no tools. |
-| `GEMINI_MODEL` | No | Defaults to `gemini-2.5-flash`. |
-| `OLLAMA_BASE_URL` | Only if `MODEL_PROVIDER=ollama` | Defaults to `http://localhost:11434`, no API key needed. |
-| `OLLAMA_MODEL` | No | Defaults to `llama3.1`. |
-| `MAX_TOKENS` | No | Defaults to `1024`. |
-| `GLACIER_API_KEY` | Yes, for ChainKit examples | Free key from [avacloud.io](https://avacloud.io). |
-| `CHAINKIT_MCP_URL` | Yes, for the MCP agent | Printed by `npx -y @avalanche-sdk/chainkit mcp-server` when you start it. |
-| `WALLET_ADDRESS` | Yes | Any Fuji wallet address to query. |
+| Variable            | Required                        | Notes                                                                                                               |
+| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `MODEL_PROVIDER`    | No                              | `anthropic`, `openai`, `gemini`, or `ollama`. Defaults to `anthropic`.                                              |
+| `ANTHROPIC_API_KEY` | Yes (default provider)          | Only provider with tool-calling support.                                                                            |
+| `ANTHROPIC_MODEL`   | No                              | Defaults to `claude-sonnet-4-6`.                                                                                    |
+| `OPENAI_API_KEY`    | Only if `MODEL_PROVIDER=openai` | Plain text chat only, no tools.                                                                                     |
+| `OPENAI_MODEL`      | No                              | Defaults to `gpt-4.1`.                                                                                              |
+| `GEMINI_API_KEY`    | Only if `MODEL_PROVIDER=gemini` | Plain text chat only, no tools.                                                                                     |
+| `GEMINI_MODEL`      | No                              | Defaults to `gemini-2.5-flash`.                                                                                     |
+| `OLLAMA_BASE_URL`   | Only if `MODEL_PROVIDER=ollama` | Defaults to `http://localhost:11434`, no API key needed.                                                            |
+| `OLLAMA_MODEL`      | No                              | Defaults to `llama3.1`.                                                                                             |
+| `MAX_TOKENS`        | No                              | Defaults to `1024`.                                                                                                 |
+| `GLACIER_API_KEY`   | Yes, for ChainKit examples      | Free key from [avacloud.io](https://avacloud.io).                                                                   |
+| `CHAINKIT_MCP_URL`  | Yes, for the MCP agent          | The SSE endpoint from `npx -y @avalanche-sdk/chainkit mcp start --transport sse`, e.g. `http://localhost:2718/sse`. |
+| `WALLET_ADDRESS`    | Yes                             | Any Fuji wallet address to query.                                                                                   |
 
 ---
 
@@ -123,11 +123,11 @@ ChainKit running as an MCP server, wired into a tool-calling agent.
 Start the MCP server first, in a **separate terminal**:
 
 ```bash
-npx -y @avalanche-sdk/chainkit mcp-server
+npm run mcp-server
 ```
 
-Copy the local URL it prints into `CHAINKIT_MCP_URL` in `javascript/.env`,
-then in your original terminal:
+Put the SSE endpoint it prints (e.g. `http://localhost:2718/sse`) into
+`CHAINKIT_MCP_URL` in `javascript/.env`, then in your original terminal:
 
 ```bash
 npm run mcp-agent
@@ -188,10 +188,11 @@ Uses the official `mcp` Python SDK. Start the ChainKit MCP server first,
 in a **separate terminal** (still needs Node.js installed):
 
 ```bash
-npx -y @avalanche-sdk/chainkit mcp-server
+npx -y @avalanche-sdk/chainkit mcp start --transport sse
 ```
 
-Copy the URL it prints into `CHAINKIT_MCP_URL` in `python/.env`, then:
+Copy the SSE endpoint it prints into `CHAINKIT_MCP_URL` in
+`python/.env`, then:
 
 ```bash
 python chainkit_mcp_agent.py
@@ -242,10 +243,11 @@ Uses `github.com/mark3labs/mcp-go`. Start the ChainKit MCP server first,
 in a **separate terminal** (needs Node.js):
 
 ```bash
-npx -y @avalanche-sdk/chainkit mcp-server
+npx -y @avalanche-sdk/chainkit mcp start --transport sse
 ```
 
-Copy the URL it prints into `CHAINKIT_MCP_URL` in `golang/.env`, then:
+Copy the SSE endpoint it prints into `CHAINKIT_MCP_URL` in
+`golang/.env`, then:
 
 ```bash
 go run ./chainkit-mcp-agent
@@ -310,10 +312,11 @@ this folder). Start the ChainKit MCP server first, in a **separate
 terminal** (needs Node.js):
 
 ```bash
-npx -y @avalanche-sdk/chainkit mcp-server
+npx -y @avalanche-sdk/chainkit mcp start --transport sse
 ```
 
-Copy the URL it prints into `CHAINKIT_MCP_URL` in `rust/.env`, then:
+Copy the SSE endpoint it prints into `CHAINKIT_MCP_URL` in
+`rust/.env`, then:
 
 ```bash
 cargo run --bin chainkit_mcp_agent
@@ -344,9 +347,9 @@ file.
 ## Troubleshooting
 
 - **`chainkit-mcp-agent` / `chainkit_mcp_agent` fails to connect** —
-  make sure `npx -y @avalanche-sdk/chainkit mcp-server` is still
-  running in its own terminal, and that `CHAINKIT_MCP_URL` in `.env`
-  matches the URL it printed exactly.
+  make sure `npx -y @avalanche-sdk/chainkit mcp start --transport sse` is
+  still running in its own terminal, and that `CHAINKIT_MCP_URL` in
+  `.env` matches the SSE endpoint it printed exactly.
 - **ChainKit fetch returns an auth error** — double check
   `GLACIER_API_KEY` is set and valid; get a free key from
   [avacloud.io](https://avacloud.io).

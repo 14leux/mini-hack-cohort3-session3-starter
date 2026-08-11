@@ -4,12 +4,12 @@
 //! terminal:
 //!
 //! ```text
-//! npx -y @avalanche-sdk/chainkit mcp-server
+//! npx -y @avalanche-sdk/chainkit mcp start --transport sse
 //! ```
 //!
-//! It will print the local URL it is running on, e.g.
-//! `http://localhost:PORT/mcp`. Put that URL in `CHAINKIT_MCP_URL` in
-//! your `.env`.
+//! It will print the host/port it is listening on, e.g.
+//! `http://localhost:2718/sse`. Put that SSE endpoint in
+//! `CHAINKIT_MCP_URL` in your `.env`.
 //!
 //! This agent then asks a plain-English question, the model decides to
 //! call a ChainKit tool, and the tool call is forwarded straight to the
@@ -50,7 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let api_key = env::var("ANTHROPIC_API_KEY").map_err(|_| "ANTHROPIC_API_KEY is not set.")?;
     let mcp_url =
-        env::var("CHAINKIT_MCP_URL").map_err(|_| "Set CHAINKIT_MCP_URL in your .env first, from the running mcp-server output.")?;
+        env::var("CHAINKIT_MCP_URL").map_err(|_| "Set CHAINKIT_MCP_URL in your .env first, from the running mcp server output (e.g. http://localhost:2718/sse).")?;
     let model = env::var("ANTHROPIC_MODEL").unwrap_or_else(|_| "claude-sonnet-4-6".to_string());
 
     let http = reqwest::Client::new();

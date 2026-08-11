@@ -42,10 +42,11 @@ For `chainkit-mcp-agent`, start the ChainKit MCP server in another
 terminal first (needs Node.js, ChainKit itself is JS-only):
 
 ```bash
-npx -y @avalanche-sdk/chainkit mcp-server
+npx -y @avalanche-sdk/chainkit mcp start --transport sse
 ```
 
-Put the URL it prints into `CHAINKIT_MCP_URL` in your `.env`.
+Put the SSE endpoint it prints (e.g. `http://localhost:2718/sse`) into
+`CHAINKIT_MCP_URL` in your `.env`.
 
 ## A note on dependency versions
 

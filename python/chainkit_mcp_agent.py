@@ -2,9 +2,9 @@
 ChainKit as an MCP server, wired into an agent.
 
 Before running this, start the ChainKit MCP server in another terminal:
-    npx -y @avalanche-sdk/chainkit mcp-server
-It will print the local URL it is running on, e.g. http://localhost:PORT/mcp
-Put that URL in CHAINKIT_MCP_URL in your .env.
+    npx -y @avalanche-sdk/chainkit mcp start --transport sse
+It will print the host/port it is listening on. Put the SSE endpoint
+(e.g. http://localhost:2718/sse) in CHAINKIT_MCP_URL in your .env.
 
 This agent then asks a plain-English question, the model decides to call
 a ChainKit tool, and the tool call is forwarded straight to the running
@@ -44,7 +44,7 @@ def _mcp_tools_to_anthropic_format(mcp_tools) -> list:
 async def main():
     url = os.environ.get("CHAINKIT_MCP_URL")
     if not url:
-        raise ValueError("Set CHAINKIT_MCP_URL in your .env first, from the running mcp-server output.")
+        raise ValueError("Set CHAINKIT_MCP_URL in your .env first, from the running mcp server output (e.g. http://localhost:2718/sse).")
 
     client = create_model_client()
     messages = []

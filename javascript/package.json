@@ -6,13 +6,18 @@
   "scripts": {
     "direct-rpc": "node direct-rpc.js",
     "fetch-transactions": "node chainkit-fetch.js",
+    "mcp-server": "node node_modules/@avalanche-sdk/chainkit/bin/mcp-server.js start --transport sse --port 2718",
     "mcp-agent": "node chainkit-mcp-agent.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.0",
-    "@avalanche-sdk/chainkit": "^1.0.0",
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@avalanche-sdk/chainkit": "^0.3.13",
+    "@google/generative-ai": "^0.24.1",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "dotenv": "^16.4.5",
-    "ethers": "^6.13.0"
+    "ethers": "^6.13.0",
+    "mcp": "^1.4.2",
+    "ollama": "^0.6.3",
+    "openai": "^7.4.0"
   }
 }

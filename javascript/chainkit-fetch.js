@@ -4,32 +4,42 @@
 // no manual RPC parsing. Needs a free Glacier API key from avacloud.io.
 
 import "dotenv/config";
-import { AvalancheSDK } from "@avalanche-sdk/chainkit";
+import { Avalanche } from "@avalanche-sdk/chainkit";
 import { normalizeMany } from "./normalize.js";
 
 async function main() {
   const walletAddress = process.env.WALLET_ADDRESS;
   const apiKey = process.env.GLACIER_API_KEY;
   if (!walletAddress) throw new Error("Set WALLET_ADDRESS in your .env first.");
-  if (!apiKey) throw new Error("Set GLACIER_API_KEY in your .env first. Get a free one at avacloud.io.");
+  if (!apiKey)
+    throw new Error(
+      "Set GLACIER_API_KEY in your .env first. Get a free one at avacloud.io.",
+    );
 
-  const avalancheSDK = new AvalancheSDK({ apiKey });
-
-  const { transactions } = await avalancheSDK.data.evm.transactions.listTransactions({
-    chainId: "43113", // Fuji testnet
-    address: walletAddress,
-    pageSize: 10,
+  const avalancheSDK = new Avalanche({
+    chainId: "43113",
+    apiKey,
   });
 
-  console.log(`Found ${transactions.length} transactions\n`);
+  try {
+    const result = await avalancheSDK.data.evm.address.transactions.list({
+      address: walletAddress,
+      sortOrder: "asc",
+    });
 
-  const normalized = normalizeMany(transactions);
-  for (const tx of normalized) {
-    console.log(`${tx.status === "success" ? "OK" : "FAILED"}  ${tx.amount} ${tx.token}  ${tx.timestamp}  ${tx.hash}`);
+    console.log(result);
+
+    const transactions = result?.result?.transactions ?? result?.items ?? [];
+
+    console.log(`Found ${transactions.length} transactions\n`);
+
+    for (const tx of transactions) {
+      console.log("->", tx);
+    }
+  } catch (error) {
+    console.error("ChainKit fetch error:", error);
+    process.exit(1);
   }
 }
 
-main().catch((err) => {
-  console.error("ChainKit fetch error:", err.message);
-  process.exit(1);
-});
+main();

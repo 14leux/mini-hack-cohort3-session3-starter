@@ -29,17 +29,18 @@ cp .env.example .env
 ```bash
 npm run direct-rpc          # Method 1, no API key needed beyond the RPC endpoint itself
 npm run fetch-transactions  # Method 2, needs GLACIER_API_KEY
-npm run mcp-agent           # ChainKit as MCP, needs the mcp-server running separately first
+npm run mcp-agent           # ChainKit as MCP, needs the mcp server running separately first
 ```
 
 For `mcp-agent`, start the ChainKit MCP server in another terminal
 first:
 
 ```bash
-npx -y @avalanche-sdk/chainkit mcp-server
+npx -y @avalanche-sdk/chainkit mcp start --transport sse
 ```
 
-It prints the local URL it's running on. Put that in `CHAINKIT_MCP_URL`
+It prints the local host/port it's listening on. Put the SSE endpoint
+(`http://localhost:2718/sse`, port defaults to 2718) in `CHAINKIT_MCP_URL`
 in your `.env` before running the agent.
 
 ## Model provider
